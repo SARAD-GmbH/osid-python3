@@ -101,7 +101,5 @@ ENV/
 
 
 # Project specific
-system/server.ini
 .remote-sync.json
 system/osid.desktop
-system/run_app.sh

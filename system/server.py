@@ -20,9 +20,10 @@ class SDCardDupe(object):
 
 
         # Get webpage, then replace needed parts here
+        cherrypy.log("Jetzt geht es los.")
         www_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) + "/www/"
         html_string = open(www_path + 'index.html', 'r').read()
-        hostname_port = config_parse['DuplicatorSettings']['Host']+":"+config_parse['DuplicatorSettings']['SocketPort']
+        hostname_port = config_parse['DuplicatorSettings']['Hostname']+":"+config_parse['DuplicatorSettings']['SocketPort']
         html_string = html_string.replace("replacewithhostnamehere",hostname_port)
 
         css_string = '<style>' + open(config_parse['DuplicatorSettings']['SkeletonLocation'], 'r').read() + '</style>'
@@ -42,7 +43,7 @@ class SDCardDupe(object):
         # Get webpage, then replace needed parts here
         www_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) + "/www/"
         html_string = open(www_path + 'monitor.html', 'r').read()
-        hostname_port = config_parse['DuplicatorSettings']['Host']+":"+config_parse['DuplicatorSettings']['SocketPort']
+        hostname_port = config_parse['DuplicatorSettings']['Hostname']+":"+config_parse['DuplicatorSettings']['SocketPort']
         html_string = html_string.replace("replacewithhostnamehere",hostname_port)
 
         css_string = '<style>' + open(config_parse['DuplicatorSettings']['SkeletonLocation'], 'r').read() + '</style>'
@@ -113,7 +114,7 @@ class SDCardDupe(object):
 
         subprocess.Popen(['sudo', 'bash', dd_cmd_file], close_fds=True)
 
-        hostname_port = config_parse['DuplicatorSettings']['Host']+":"+config_parse['DuplicatorSettings']['SocketPort']
+        hostname_port = config_parse['DuplicatorSettings']['Hostname']+":"+config_parse['DuplicatorSettings']['SocketPort']
         monitor_url = "http://" +  hostname_port + "/monitor";
 
 
@@ -199,6 +200,7 @@ class SDCardDupe(object):
         config_parse.read( os.path.dirname(os.path.realpath(__file__)) + '/server.ini' )
 
         # get the list of images and check if valid img file
+        cherrypy.log("Get list of images")
         for img_file in os.listdir(config_parse['DuplicatorSettings']['ImagePath']):
             img_fullpath = os.path.join(config_parse['DuplicatorSettings']['ImagePath'], img_file)
             if os.path.isfile(img_fullpath) and  os.path.splitext(img_file)[1] == '.img':
@@ -233,7 +235,8 @@ if __name__ == '__main__':
             'server.socket_host': config_parse['DuplicatorSettings']['Host'],
             'server.socket_port': int(config_parse['DuplicatorSettings']['SocketPort']),
             'log.access_file' : config_parse['DuplicatorSettings']['Logs']+"/access.log",
-            'log.screen': False,
+            'log.error_file' : config_parse['DuplicatorSettings']['Logs']+"/error.log",
+            'log.screen': True,
             'tools.sessions.on': True
         }
     }
